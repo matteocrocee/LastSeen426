@@ -1,0 +1,44 @@
+#HUD {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+#HealthLabel {
+    position: absolute;
+    left: 25px;
+    top: 20px;
+
+    font-size: 22px;
+    color: white;
+    -unity-font-style: bold;
+}
+
+#Crosshair {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    font-size: 28px;
+    color: white;
+
+    -unity-text-align: middle-center;
+
+    translate: -50% -50%;
+}
+
+#BottomLeft {
+    position: absolute;
+    left: 25px;
+    bottom: 25px;
+
+    flex-direction: column;
+}
+
+#InteractionLabel,
+#InventoryLabel {
+    font-size: 18px;
+    color: white;
+
+    margin-top: 5px;
+}
