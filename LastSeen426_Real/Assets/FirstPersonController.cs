@@ -14,6 +14,7 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float maxLookAngle = 85f;
 
     private CharacterController controller;
+    private Rigidbody rb;
 
     private float verticalVelocity;
     private float cameraPitch;
@@ -30,6 +31,14 @@ public class FirstPersonController : MonoBehaviour
             enabled = false;
             return;
         }
+
+        // Recupera o aggiunge il Rigidbody per permettere le collisioni con i Trigger
+        rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = gameObject.AddComponent<Rigidbody>();
+        }
+        rb.isKinematic = true; // Impedisce alla fisica di interferire con il CharacterController
 
         if (cameraTransform == null)
         {
@@ -59,7 +68,7 @@ public class FirstPersonController : MonoBehaviour
         // ruota tutto il Player.
         transform.Rotate(Vector3.up * mouseX);
 
-        // Su / gi˘:
+        // Su / gi√π:
         // ruota solamente la Camera.
         cameraPitch -= mouseY;
         cameraPitch = Mathf.Clamp(
@@ -82,7 +91,7 @@ public class FirstPersonController : MonoBehaviour
             transform.right * horizontal +
             transform.forward * vertical;
 
-        // Evita che diagonale + diagonale sia pi˘ veloce.
+        // Evita che diagonale + diagonale sia pi√π veloce.
         if (direction.magnitude > 1f)
         {
             direction.Normalize();
@@ -95,7 +104,7 @@ public class FirstPersonController : MonoBehaviour
 
         Vector3 movement = direction * currentSpeed;
 
-        // Gravit‡
+        // Gravit√†
         if (controller.isGrounded)
         {
             if (verticalVelocity < 0f)
