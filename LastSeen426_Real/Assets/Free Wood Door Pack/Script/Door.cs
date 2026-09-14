@@ -1,43 +1,80 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+
 namespace DoorScript
 {
-	[RequireComponent(typeof(AudioSource))]
+    [RequireComponent(typeof(AudioSource))]
+    public class Door : MonoBehaviour
+    {
+        [Header("PORTA")]
+        public bool canOpen = true;
+        public bool open = false;
+        public float rotationSpeed = 5f;
+        public float openAngle = 90f;
 
+        [Header("AUDIO")]
+        public AudioSource asource;
+        public AudioClip openDoor;
+        public AudioClip closeDoor;
 
-public class Door : MonoBehaviour {
-	public bool open;
-	public float smooth = 1.0f;
-	float DoorOpenAngle = -90.0f;
-    float DoorCloseAngle = 0.0f;
-	public AudioSource asource;
-	public AudioClip openDoor,closeDoor;
-	// Use this for initialization
-	void Start () {
-		asource = GetComponent<AudioSource> ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (open)
-		{
-            var target = Quaternion.Euler (0, DoorOpenAngle, 0);
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, target, Time.deltaTime * 5 * smooth);
-	
-		}
-		else
-		{
-            var target1= Quaternion.Euler (0, DoorCloseAngle, 0);
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, target1, Time.deltaTime * 5 * smooth);
-	
-		}  
-	}
+        private Quaternion closedRotation;
+        private Quaternion openRotation;
 
-	public void OpenDoor(){
-		open =!open;
-		asource.clip = open?openDoor:closeDoor;
-		asource.Play ();
-	}
-}
+        private void Start()
+        {
+            asource = GetComponent<AudioSource>();
+
+            closedRotation = transform.localRotation;
+
+            openRotation = closedRotation * Quaternion.Euler(
+                0f,
+                openAngle,
+                0f
+            );
+        }
+
+        private void Update()
+        {
+            Quaternion targetRotation;
+
+            if (open)
+            {
+                targetRotation = openRotation;
+            }
+            else
+            {
+                targetRotation = closedRotation;
+            }
+
+            transform.localRotation = Quaternion.Slerp(
+                transform.localRotation,
+                targetRotation,
+                Time.deltaTime * rotationSpeed
+            );
+        }
+
+        public void OpenDoor()
+        {
+            // Se la porta non è apribile, non fare niente
+            if (!canOpen)
+            {
+                return;
+            }
+
+            open = !open;
+
+            if (asource != null)
+            {
+                if (open && openDoor != null)
+                {
+                    asource.clip = openDoor;
+                    asource.Play();
+                }
+                else if (!open && closeDoor != null)
+                {
+                    asource.clip = closeDoor;
+                    asource.Play();
+                }
+            }
+        }
+    }
 }
