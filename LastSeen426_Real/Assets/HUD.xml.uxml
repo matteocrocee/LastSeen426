@@ -10,7 +10,7 @@
         <ui:Label name="PickupMessage" text=""/>
         <ui:VisualElement name="InventoryScreen">
             <ui:Label name="InventoryTitle" text="INVENTARIO"/>
-            <ui:Label name="InventoryItems" text=""/>
+            <ui:VisualElement name="InventoryGrid"/>
             <ui:Label name="InventoryClose" text="[TAB] CHIUDI"/>
         </ui:VisualElement>
         <ui:VisualElement name="DeathScreen">

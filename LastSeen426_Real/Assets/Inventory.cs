@@ -5,13 +5,13 @@ using UnityEngine.UIElements;
 public class Inventory : MonoBehaviour
 {
     [Header("INVENTARIO")]
-    public List<string> items = new List<string>();
+    public List<InventoryItem> items = new List<InventoryItem>();
 
     [Header("HUD")]
     public UIDocument hudDocument;
 
     private VisualElement inventoryScreen;
-    private Label inventoryItems;
+    private VisualElement inventoryGrid;
 
     private bool inventoryOpen = false;
 
@@ -25,8 +25,8 @@ public class Inventory : MonoBehaviour
             inventoryScreen =
                 root.Q<VisualElement>("InventoryScreen");
 
-            inventoryItems =
-                root.Q<Label>("InventoryItems");
+            inventoryGrid =
+                root.Q<VisualElement>("InventoryGrid");
         }
 
         CloseInventory();
@@ -42,21 +42,67 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void AddItem(string itemName)
-    {
-        items.Add(itemName);
+    // =========================
+    // AGGIUNGI OGGETTO
+    // =========================
 
-        Debug.Log("OGGETTO RACCOLTO: " + itemName);
+    public void AddItem(string itemName, Sprite itemImage)
+    {
+        InventoryItem existingItem = null;
+
+        foreach (InventoryItem item in items)
+        {
+            if (item.itemName == itemName)
+            {
+                existingItem = item;
+                break;
+            }
+        }
+
+        if (existingItem != null)
+        {
+            existingItem.quantity++;
+        }
+        else
+        {
+            InventoryItem newItem =
+                new InventoryItem(
+                    itemName,
+                    itemImage
+                );
+
+            items.Add(newItem);
+        }
+
+        Debug.Log(
+            "OGGETTO RACCOLTO: " + itemName
+        );
 
         UpdateInventoryUI();
 
         ShowPickupMessage(itemName);
     }
 
+    // =========================
+    // CONTROLLA SE HAI OGGETTO
+    // =========================
+
     public bool HasItem(string itemName)
     {
-        return items.Contains(itemName);
+        foreach (InventoryItem item in items)
+        {
+            if (item.itemName == itemName)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
+
+    // =========================
+    // APRI / CHIUDI INVENTARIO
+    // =========================
 
     private void ToggleInventory()
     {
@@ -94,37 +140,115 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    // =========================
+    // AGGIORNA INVENTARIO
+    // =========================
+
     private void UpdateInventoryUI()
     {
-        if (inventoryItems == null)
+        if (inventoryGrid == null)
         {
             return;
         }
 
+        // Cancella gli slot precedenti
+        inventoryGrid.Clear();
+
+        // INVENTARIO VUOTO
         if (items.Count == 0)
         {
-            inventoryItems.text =
-                "Inventario vuoto";
+            Label emptyLabel =
+                new Label("Inventario vuoto");
+
+            emptyLabel.AddToClassList(
+                "inventory-empty"
+            );
+
+            inventoryGrid.Add(emptyLabel);
 
             return;
         }
 
-        string text = "";
-
-        for (int i = 0; i < items.Count; i++)
+        // CREA UNO SLOT PER OGNI OGGETTO
+        foreach (InventoryItem item in items)
         {
-            text += "• " + items[i];
-
-            if (i < items.Count - 1)
-            {
-                text += "\n";
-            }
+            CreateInventorySlot(item);
         }
-
-        inventoryItems.text = text;
     }
 
-    private void ShowPickupMessage(string itemName)
+    // =========================
+    // CREA SLOT OGGETTO
+    // =========================
+
+    private void CreateInventorySlot(
+        InventoryItem item
+    )
+    {
+        VisualElement slot =
+            new VisualElement();
+
+        slot.AddToClassList(
+            "inventory-slot"
+        );
+
+        // =========================
+        // IMMAGINE
+        // =========================
+
+        Image image =
+            new Image();
+
+        image.AddToClassList(
+            "inventory-image"
+        );
+
+        if (item.itemImage != null)
+        {
+            image.image =
+                item.itemImage.texture;
+        }
+
+        slot.Add(image);
+
+        // =========================
+        // NOME
+        // =========================
+
+        Label nameLabel =
+            new Label(item.itemName);
+
+        nameLabel.AddToClassList(
+            "inventory-name"
+        );
+
+        slot.Add(nameLabel);
+
+        // =========================
+        // QUANTITÀ
+        // =========================
+
+        Label quantityLabel =
+            new Label(
+                "×" + item.quantity
+            );
+
+        quantityLabel.AddToClassList(
+            "inventory-quantity"
+        );
+
+        slot.Add(quantityLabel);
+
+        // Aggiunge lo slot alla griglia
+        inventoryGrid.Add(slot);
+    }
+
+    // =========================
+    // MESSAGGIO RACCOLTA
+    // =========================
+
+    private void ShowPickupMessage(
+        string itemName
+    )
     {
         if (hudDocument == null)
         {
@@ -146,7 +270,9 @@ public class Inventory : MonoBehaviour
         pickupMessage.style.display =
             DisplayStyle.Flex;
 
-        CancelInvoke(nameof(HidePickupMessage));
+        CancelInvoke(
+            nameof(HidePickupMessage)
+        );
 
         Invoke(
             nameof(HidePickupMessage),

@@ -5,9 +5,17 @@ public class PickupItem : MonoBehaviour
     [Header("OGGETTO")]
     [SerializeField] private string itemName = "Oggetto";
 
+    [Header("IMMAGINE")]
+    [SerializeField] private Sprite itemImage;
+
     public string ItemName
     {
         get { return itemName; }
+    }
+
+    public Sprite ItemImage
+    {
+        get { return itemImage; }
     }
 
     public void PickUp(Inventory inventory)
@@ -18,7 +26,7 @@ public class PickupItem : MonoBehaviour
             return;
         }
 
-        inventory.AddItem(itemName);
+        inventory.AddItem(itemName, itemImage);
 
         Destroy(gameObject);
     }

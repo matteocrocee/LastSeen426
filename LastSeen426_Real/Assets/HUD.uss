@@ -7,14 +7,9 @@
     bottom: 0;
 }
 
-
-/* =========================
-   VITA
-   ========================= */
-
+/* VITA */
 #HealthLabel {
     position: absolute;
-
     left: 25px;
     top: 20px;
 
@@ -24,11 +19,7 @@
     -unity-font-style: bold;
 }
 
-
-/* =========================
-   MIRINO
-   ========================= */
-
+/* MIRINO */
 #Crosshair {
     position: absolute;
 
@@ -47,11 +38,7 @@
     -unity-text-align: middle-center;
 }
 
-
-/* =========================
-   BASSO SINISTRA
-   ========================= */
-
+/* BASSO SINISTRA */
 #BottomLeft {
     position: absolute;
 
@@ -73,11 +60,7 @@
     color: white;
 }
 
-
-/* =========================
-   MESSAGGIO OGGETTO
-   ========================= */
-
+/* MESSAGGIO RACCOLTA */
 #PickupMessage {
     position: absolute;
 
@@ -93,16 +76,14 @@
     color: white;
 
     -unity-font-style: bold;
-
     -unity-text-align: middle-center;
 
     display: none;
 }
 
-
-/* =========================
-   INVENTARIO
-   ========================= */
+/* ========================= */
+/* INVENTARIO */
+/* ========================= */
 
 #InventoryScreen {
     position: absolute;
@@ -110,19 +91,16 @@
     left: 50%;
     top: 50%;
 
-    width: 600px;
-    height: 450px;
+    width: 700px;
+    height: 500px;
 
-    margin-left: -300px;
-    margin-top: -225px;
+    margin-left: -350px;
+    margin-top: -250px;
 
     background-color: rgba(0, 0, 0, 0.9);
 
     display: none;
 }
-
-
-/* TITOLO */
 
 #InventoryTitle {
     position: absolute;
@@ -137,29 +115,82 @@
     color: white;
 
     -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+/* GRIGLIA DEGLI OGGETTI */
+#InventoryGrid {
+    position: absolute;
+
+    left: 35px;
+    right: 35px;
+
+    top: 95px;
+    bottom: 70px;
+
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    align-content: flex-start;
+}
+
+/* SINGOLO SLOT */
+.inventory-slot {
+    width: 140px;
+    height: 155px;
+
+    margin-right: 15px;
+    margin-bottom: 15px;
+
+    background-color: rgba(255, 255, 255, 0.08);
+
+    align-items: center;
+}
+
+/* IMMAGINE */
+.inventory-image {
+    width: 90px;
+    height: 90px;
+
+    margin-top: 10px;
+}
+
+/* NOME */
+.inventory-name {
+    width: 130px;
+    height: 25px;
+
+    margin-top: 5px;
+
+    font-size: 16px;
+    color: white;
 
     -unity-text-align: middle-center;
 }
 
+/* QUANTITÀ */
+.inventory-quantity {
+    width: 130px;
+    height: 20px;
 
-/* OGGETTI */
-
-#InventoryItems {
-    position: absolute;
-
-    left: 40px;
-    top: 100px;
-
-    right: 40px;
-    bottom: 80px;
-
-    font-size: 22px;
+    font-size: 14px;
     color: white;
+
+    -unity-text-align: middle-center;
 }
 
+/* INVENTARIO VUOTO */
+.inventory-empty {
+    width: 100%;
+    height: 50px;
+
+    font-size: 20px;
+    color: white;
+
+    -unity-text-align: middle-center;
+}
 
 /* CHIUDI */
-
 #InventoryClose {
     position: absolute;
 
@@ -175,10 +206,9 @@
     -unity-text-align: middle-center;
 }
 
-
-/* =========================
-   MORTE
-   ========================= */
+/* ========================= */
+/* MORTE */
+/* ========================= */
 
 #DeathScreen {
     position: absolute;
@@ -192,7 +222,6 @@
 
     background-color: rgba(0, 0, 0, 0.55);
 }
-
 
 #DeathLabel {
     position: absolute;
@@ -210,6 +239,5 @@
     color: white;
 
     -unity-font-style: bold;
-
     -unity-text-align: middle-center;
 }
