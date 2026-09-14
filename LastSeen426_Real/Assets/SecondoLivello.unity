@@ -4216,6 +4216,9 @@ GameObject:
   - component: {fileID: 2146171251}
   - component: {fileID: 2146171250}
   - component: {fileID: 2146171249}
+  - component: {fileID: 2146171254}
+  - component: {fileID: 2146171253}
+  - component: {fileID: 2146171252}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -4283,6 +4286,50 @@ Transform:
   - {fileID: 906974272}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -0.81, y: 0, z: 0}
+--- !u!114 &2146171252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2146171248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ab3aac706e0b94a8b8412c7da82034, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 100
+  currentHealth: 100
+  hudDocument: {fileID: 1818323593}
+--- !u!114 &2146171253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2146171248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69b88e8af78db1d4989534f902b537d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  items: []
+  hudDocument: {fileID: 1818323593}
+--- !u!114 &2146171254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2146171248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68f077f07b8d80446a4b803188415ef5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DoorInteraction
+  interactionDistance: 3
+  playerCamera: {fileID: 0}
+  hudDocument: {fileID: 1818323593}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

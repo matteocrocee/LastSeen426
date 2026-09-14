@@ -11,11 +11,14 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private UIDocument hudDocument;
 
     private DoorScript.Door currentDoor;
+    private PickupItem currentItem;
+
     private Label interactionLabel;
+
+    private Inventory inventory;
 
     private void Start()
     {
-        // Trova la camera
         if (playerCamera == null)
         {
             playerCamera = Camera.main;
@@ -23,14 +26,16 @@ public class DoorInteraction : MonoBehaviour
 
         if (playerCamera == null)
         {
-            Debug.LogError("DoorInteraction: Main Camera non trovata!");
+            Debug.LogError(
+                "DoorInteraction: Main Camera non trovata!"
+            );
         }
 
-        // Trova la scritta dell'HUD
         if (hudDocument != null)
         {
             interactionLabel =
-                hudDocument.rootVisualElement.Q<Label>("InteractionLabel");
+                hudDocument.rootVisualElement
+                .Q<Label>("InteractionLabel");
         }
 
         if (interactionLabel == null)
@@ -40,7 +45,13 @@ public class DoorInteraction : MonoBehaviour
             );
         }
 
-        // All'inizio la scritta è nascosta
+        inventory = GetComponent<Inventory>();
+
+        if (inventory == null)
+        {
+            inventory = gameObject.AddComponent<Inventory>();
+        }
+
         HideInteractionText();
     }
 
@@ -57,6 +68,7 @@ public class DoorInteraction : MonoBehaviour
     private void CheckInteraction()
     {
         currentDoor = null;
+        currentItem = null;
 
         if (playerCamera == null)
         {
@@ -75,6 +87,29 @@ public class DoorInteraction : MonoBehaviour
             interactionDistance
         ))
         {
+            // =========================
+            // OGGETTO RACCOGLIBILE
+            // =========================
+
+            PickupItem item =
+                hit.collider.GetComponentInParent<PickupItem>();
+
+            if (item != null)
+            {
+                currentItem = item;
+
+                ShowInteractionText(
+                    "[E] RACCOGLI"
+                );
+
+                return;
+            }
+
+
+            // =========================
+            // PORTA
+            // =========================
+
             DoorScript.Door door =
                 hit.collider.GetComponentInParent<DoorScript.Door>();
 
@@ -82,26 +117,36 @@ public class DoorInteraction : MonoBehaviour
             {
                 currentDoor = door;
 
-                // Cambia la scritta in base allo stato della porta
                 if (door.open)
                 {
-                    ShowInteractionText("[E] CHIUDI");
+                    ShowInteractionText(
+                        "[E] CHIUDI"
+                    );
                 }
                 else
                 {
-                    ShowInteractionText("[E] APRI");
+                    ShowInteractionText(
+                        "[E] APRI"
+                    );
                 }
 
                 return;
             }
         }
 
-        // Non stiamo guardando una porta utilizzabile
         HideInteractionText();
     }
 
     private void Interact()
     {
+        // OGGETTO
+        if (currentItem != null)
+        {
+            currentItem.PickUp(inventory);
+            return;
+        }
+
+        // PORTA
         if (currentDoor != null)
         {
             currentDoor.OpenDoor();
@@ -113,7 +158,9 @@ public class DoorInteraction : MonoBehaviour
         if (interactionLabel != null)
         {
             interactionLabel.text = text;
-            interactionLabel.style.display = DisplayStyle.Flex;
+
+            interactionLabel.style.display =
+                DisplayStyle.Flex;
         }
     }
 
@@ -121,7 +168,8 @@ public class DoorInteraction : MonoBehaviour
     {
         if (interactionLabel != null)
         {
-            interactionLabel.style.display = DisplayStyle.None;
+            interactionLabel.style.display =
+                DisplayStyle.None;
         }
     }
 }

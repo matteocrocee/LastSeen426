@@ -7,5 +7,14 @@
             <ui:Label name="InteractionLabel" text="[E] INTERAGISCI"/>
             <ui:Label name="InventoryLabel" text="[TAB] INVENTARIO"/>
         </ui:VisualElement>
+        <ui:Label name="PickupMessage" text=""/>
+        <ui:VisualElement name="InventoryScreen">
+            <ui:Label name="InventoryTitle" text="INVENTARIO"/>
+            <ui:Label name="InventoryItems" text=""/>
+            <ui:Label name="InventoryClose" text="[TAB] CHIUDI"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="DeathScreen">
+            <ui:Label name="DeathLabel" text="SEI MORTO"/>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
