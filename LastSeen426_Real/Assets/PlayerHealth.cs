@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class PlayerHealth : MonoBehaviour
 
     private Label healthLabel;
     private VisualElement deathScreen;
+    private Button restartButton;
 
     private bool isDead = false;
 
@@ -29,6 +31,14 @@ public class PlayerHealth : MonoBehaviour
 
             deathScreen =
                 root.Q<VisualElement>("DeathScreen");
+
+            restartButton =
+                root.Q<Button>("RestartButton");
+
+            if (restartButton != null)
+            {
+                restartButton.clicked += RestartGame;
+            }
         }
 
         if (deathScreen != null)
@@ -40,6 +50,15 @@ public class PlayerHealth : MonoBehaviour
         UpdateHealthHUD();
     }
 
+    private void Update()
+    {
+        if (isDead &&
+            Input.GetKeyDown(KeyCode.R))
+        {
+            RestartGame();
+        }
+    }
+
     public void TakeDamage(float damage)
     {
         if (isDead)
@@ -49,11 +68,12 @@ public class PlayerHealth : MonoBehaviour
 
         currentHealth -= damage;
 
-        currentHealth = Mathf.Clamp(
-            currentHealth,
-            0f,
-            maxHealth
-        );
+        currentHealth =
+            Mathf.Clamp(
+                currentHealth,
+                0f,
+                maxHealth
+            );
 
         UpdateHealthHUD();
 
@@ -97,5 +117,20 @@ public class PlayerHealth : MonoBehaviour
         {
             controller.enabled = false;
         }
+
+        UnityEngine.Cursor.lockState =
+            UnityEngine.CursorLockMode.None;
+
+        UnityEngine.Cursor.visible = true;
+    }
+
+    private void RestartGame()
+    {
+        Scene currentScene =
+            SceneManager.GetActiveScene();
+
+        SceneManager.LoadScene(
+            currentScene.buildIndex
+        );
     }
 }

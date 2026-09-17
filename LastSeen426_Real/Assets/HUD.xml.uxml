@@ -15,6 +15,8 @@
         </ui:VisualElement>
         <ui:VisualElement name="DeathScreen">
             <ui:Label name="DeathLabel" text="SEI MORTO"/>
+            <ui:Button name="RestartButton" text="RICOMINCIA"/>
+            <ui:Label name="RestartHint" text="[R] oppure CLICCA IL PULSANTE"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
