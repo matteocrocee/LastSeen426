@@ -45,11 +45,13 @@ public class DoorInteraction : MonoBehaviour
             );
         }
 
-        inventory = GetComponent<Inventory>();
+        inventory =
+            GetComponent<Inventory>();
 
         if (inventory == null)
         {
-            inventory = gameObject.AddComponent<Inventory>();
+            inventory =
+                gameObject.AddComponent<Inventory>();
         }
 
         HideInteractionText();
@@ -76,10 +78,11 @@ public class DoorInteraction : MonoBehaviour
             return;
         }
 
-        Ray ray = new Ray(
-            playerCamera.transform.position,
-            playerCamera.transform.forward
-        );
+        Ray ray =
+            new Ray(
+                playerCamera.transform.position,
+                playerCamera.transform.forward
+            );
 
         if (Physics.Raycast(
             ray,
@@ -87,12 +90,9 @@ public class DoorInteraction : MonoBehaviour
             interactionDistance
         ))
         {
-            // =========================
-            // OGGETTO RACCOGLIBILE
-            // =========================
-
             PickupItem item =
-                hit.collider.GetComponentInParent<PickupItem>();
+                hit.collider
+                .GetComponentInParent<PickupItem>();
 
             if (item != null)
             {
@@ -105,15 +105,12 @@ public class DoorInteraction : MonoBehaviour
                 return;
             }
 
-
-            // =========================
-            // PORTA
-            // =========================
-
             DoorScript.Door door =
-                hit.collider.GetComponentInParent<DoorScript.Door>();
+                hit.collider
+                .GetComponentInParent<DoorScript.Door>();
 
-            if (door != null && door.canOpen)
+            if (door != null &&
+                door.canOpen)
             {
                 currentDoor = door;
 
@@ -122,13 +119,34 @@ public class DoorInteraction : MonoBehaviour
                     ShowInteractionText(
                         "[E] CHIUDI"
                     );
+
+                    return;
                 }
-                else
+
+                if (door.RequiresKey())
                 {
-                    ShowInteractionText(
-                        "[E] APRI"
-                    );
+                    if (inventory != null &&
+                        inventory.HasItem(
+                            door.GetRequiredKey()
+                        ))
+                    {
+                        ShowInteractionText(
+                            "[E] USA LA CHIAVE"
+                        );
+                    }
+                    else
+                    {
+                        ShowInteractionText(
+                            "[E] SERVE UNA CHIAVE"
+                        );
+                    }
+
+                    return;
                 }
+
+                ShowInteractionText(
+                    "[E] APRI"
+                );
 
                 return;
             }
@@ -139,21 +157,26 @@ public class DoorInteraction : MonoBehaviour
 
     private void Interact()
     {
-        // OGGETTO
         if (currentItem != null)
         {
-            currentItem.PickUp(inventory);
+            currentItem.PickUp(
+                inventory
+            );
+
             return;
         }
 
-        // PORTA
         if (currentDoor != null)
         {
-            currentDoor.OpenDoor();
+            currentDoor.OpenDoor(
+                inventory
+            );
         }
     }
 
-    private void ShowInteractionText(string text)
+    private void ShowInteractionText(
+        string text
+    )
     {
         if (interactionLabel != null)
         {

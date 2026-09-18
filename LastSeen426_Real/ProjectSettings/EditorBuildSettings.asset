@@ -4,6 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/progetto_Last_seen.unity
+    guid: f3fb7424a7c558a42a46419f902b9af5
+  - enabled: 1
+    path: Assets/SecondoLivello.unity
+    guid: d59260f485f7a69448eedc44469fbace
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}

@@ -1,79 +1,115 @@
+/* ===================================================== */
+/* HUD PRINCIPALE                                        */
+/* ===================================================== */
+
 #HUD {
     position: absolute;
+
     left: 0;
     top: 0;
     right: 0;
     bottom: 0;
+
+    width: 100%;
+    height: 100%;
 }
+
+
+/* ===================================================== */
+/* VITA                                                  */
+/* ===================================================== */
 
 #HealthLabel {
     position: absolute;
-    left: 25px;
+
+    left: 20px;
     top: 20px;
 
-    font-size: 22px;
     color: white;
+
+    font-size: 24px;
 
     -unity-font-style: bold;
 }
 
+
+/* ===================================================== */
+/* MIRINO                                                */
+/* ===================================================== */
+
 #Crosshair {
     position: absolute;
+
     left: 50%;
     top: 50%;
 
-    width: 30px;
-    height: 30px;
+    translate: -50% -50%;
 
-    margin-left: -15px;
-    margin-top: -15px;
-
-    font-size: 28px;
     color: white;
 
-    -unity-text-align: middle-center;
+    font-size: 28px;
+
+    -unity-font-style: bold;
 }
+
+
+/* ===================================================== */
+/* PARTE IN BASSO A SINISTRA                             */
+/* ===================================================== */
 
 #BottomLeft {
     position: absolute;
 
-    left: 25px;
-    bottom: 25px;
+    left: 20px;
+    bottom: 20px;
 
     flex-direction: column;
 }
 
+
+/* INTERAZIONE */
+
 #InteractionLabel {
-    font-size: 18px;
     color: white;
 
-    margin-bottom: 5px;
+    font-size: 20px;
+
+    margin-bottom: 8px;
 }
+
+
+/* INVENTARIO */
 
 #InventoryLabel {
-    font-size: 18px;
     color: white;
+
+    font-size: 20px;
 }
+
+
+/* ===================================================== */
+/* MESSAGGIO RACCOLTA                                    */
+/* ===================================================== */
 
 #PickupMessage {
     position: absolute;
 
     left: 50%;
-    bottom: 120px;
+    top: 15%;
 
-    width: 500px;
-    height: 40px;
+    translate: -50% 0;
 
-    margin-left: -250px;
-
-    font-size: 22px;
     color: white;
 
-    -unity-font-style: bold;
-    -unity-text-align: middle-center;
+    font-size: 24px;
 
-    display: none;
+    -unity-font-style: bold;
 }
+
+
+/* ===================================================== */
+/* SCHERMATA INVENTARIO                                  */
+/* ===================================================== */
 
 #InventoryScreen {
     position: absolute;
@@ -81,117 +117,129 @@
     left: 50%;
     top: 50%;
 
+    translate: -50% -50%;
+
     width: 700px;
     height: 500px;
 
-    margin-left: -350px;
-    margin-top: -250px;
-
-    background-color: rgba(0, 0, 0, 0.9);
-
-    display: none;
-}
-
-#InventoryTitle {
-    position: absolute;
-
-    left: 0;
-    top: 25px;
-
-    width: 100%;
-    height: 50px;
-
-    font-size: 32px;
-    color: white;
-
-    -unity-font-style: bold;
-    -unity-text-align: middle-center;
-}
-
-#InventoryGrid {
-    position: absolute;
-
-    left: 35px;
-    right: 35px;
-
-    top: 95px;
-    bottom: 70px;
-
-    flex-direction: row;
-    flex-wrap: wrap;
-
-    align-content: flex-start;
-}
-
-.inventory-slot {
-    width: 140px;
-    height: 155px;
-
-    margin-right: 15px;
-    margin-bottom: 15px;
-
-    background-color: rgba(255, 255, 255, 0.08);
+    flex-direction: column;
 
     align-items: center;
+
+    background-color: rgba(20, 20, 20, 0.95);
+
+    border-width: 3px;
+    border-color: white;
+
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
+
+/* TITOLO INVENTARIO */
+
+#InventoryTitle {
+    color: white;
+
+    font-size: 40px;
+
+    -unity-font-style: bold;
+
+    margin-bottom: 30px;
+}
+
+
+/* GRIGLIA INVENTARIO */
+
+#InventoryGrid {
+    flex-grow: 1;
+
+    width: 100%;
+
+    flex-direction: row;
+
+    flex-wrap: wrap;
+
+    align-items: flex-start;
+}
+
+
+/* SLOT */
+
+.inventory-slot {
+    width: 130px;
+    height: 150px;
+
+    margin: 10px;
+
+    align-items: center;
+
+    background-color: rgba(60, 60, 60, 0.9);
+
+    border-width: 2px;
+    border-color: white;
+}
+
+
+/* IMMAGINE */
+
 .inventory-image {
-    width: 90px;
-    height: 90px;
+    width: 80px;
+    height: 80px;
 
     margin-top: 10px;
 }
 
-.inventory-name {
-    width: 130px;
-    height: 25px;
 
-    margin-top: 5px;
+/* NOME */
+
+.inventory-name {
+    color: white;
 
     font-size: 16px;
-    color: white;
+
+    margin-top: 8px;
 
     -unity-text-align: middle-center;
 }
+
+
+/* QUANTITÀ */
 
 .inventory-quantity {
-    width: 130px;
-    height: 20px;
-
-    font-size: 14px;
     color: white;
-
-    -unity-text-align: middle-center;
-}
-
-.inventory-empty {
-    width: 100%;
-    height: 50px;
-
-    font-size: 20px;
-    color: white;
-
-    -unity-text-align: middle-center;
-}
-
-#InventoryClose {
-    position: absolute;
-
-    left: 0;
-    bottom: 20px;
-
-    width: 100%;
-    height: 30px;
 
     font-size: 18px;
-    color: white;
 
-    -unity-text-align: middle-center;
+    -unity-font-style: bold;
 }
 
-/* ========================= */
-/* SCHERMATA DI MORTE */
-/* ========================= */
+
+/* INVENTARIO VUOTO */
+
+.inventory-empty {
+    color: white;
+
+    font-size: 22px;
+}
+
+
+/* CHIUDI */
+
+#InventoryClose {
+    color: white;
+
+    font-size: 18px;
+
+    margin-top: 20px;
+}
+
+
+/* ===================================================== */
+/* SCHERMATA MORTE                                      */
+/* ===================================================== */
 
 #DeathScreen {
     position: absolute;
@@ -201,59 +249,129 @@
     right: 0;
     bottom: 0;
 
-    display: none;
+    width: 100%;
+    height: 100%;
 
-    background-color: rgba(0, 0, 0, 0.55);
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    background-color: rgba(0, 0, 0, 0.80);
 }
+
+
+/* TITOLO MORTE */
 
 #DeathLabel {
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    width: 400px;
-    height: 80px;
-
-    margin-left: -200px;
-    margin-top: -40px;
-
-    font-size: 50px;
     color: white;
 
+    font-size: 70px;
+
     -unity-font-style: bold;
-    -unity-text-align: middle-center;
+
+    margin-bottom: 40px;
 }
+
+
+/* PULSANTE MORTE */
 
 #RestartButton {
-    position: absolute;
+    width: 300px;
+    height: 65px;
 
-    left: 50%;
-    top: 58%;
+    font-size: 24px;
 
-    width: 220px;
-    height: 55px;
-
-    margin-left: -110px;
-
-    font-size: 20px;
-
-    -unity-font-style: bold;
-}
-
-#RestartHint {
-    position: absolute;
-
-    left: 50%;
-    top: 67%;
-
-    width: 500px;
-    height: 30px;
-
-    margin-left: -250px;
-
-    font-size: 16px;
     color: white;
 
-    -unity-text-align: middle-center;
+    background-color: rgba(40, 40, 40, 0.95);
+
+    border-width: 2px;
+    border-color: white;
+}
+
+
+/* HOVER */
+
+#RestartButton:hover {
+    background-color: rgba(80, 80, 80, 0.95);
+}
+
+
+/* TESTO R */
+
+#RestartHint {
+    color: white;
+
+    font-size: 18px;
+
+    margin-top: 20px;
+}
+
+
+/* ===================================================== */
+/* MENU PAUSA                                            */
+/* ===================================================== */
+
+#PauseScreen {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 100%;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+
+/* TITOLO PAUSA */
+
+#PauseTitle {
+    color: white;
+
+    font-size: 70px;
+
+    -unity-font-style: bold;
+
+    margin-bottom: 40px;
+}
+
+
+/* PULSANTI PAUSA */
+
+#ResumeButton,
+#PauseRestartButton,
+#QuitButton {
+    width: 320px;
+    height: 65px;
+
+    margin-top: 8px;
+    margin-bottom: 8px;
+
+    font-size: 24px;
+
+    color: white;
+
+    background-color: rgba(40, 40, 40, 0.95);
+
+    border-width: 2px;
+    border-color: white;
+}
+
+
+/* HOVER PAUSA */
+
+#ResumeButton:hover,
+#PauseRestartButton:hover,
+#QuitButton:hover {
+    background-color: rgba(80, 80, 80, 0.95);
 }

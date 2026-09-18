@@ -29,6 +29,12 @@ public class Inventory : MonoBehaviour
                 root.Q<VisualElement>("InventoryGrid");
         }
 
+        // Carica gli oggetti raccolti nei livelli precedenti
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.LoadInventory(this);
+        }
+
         CloseInventory();
 
         UpdateInventoryUI();
@@ -41,10 +47,6 @@ public class Inventory : MonoBehaviour
             ToggleInventory();
         }
     }
-
-    // =========================
-    // AGGIUNGI OGGETTO
-    // =========================
 
     public void AddItem(string itemName, Sprite itemImage)
     {
@@ -74,24 +76,25 @@ public class Inventory : MonoBehaviour
             items.Add(newItem);
         }
 
-        Debug.Log(
-            "OGGETTO RACCOLTO: " + itemName
-        );
+        Debug.Log("OGGETTO RACCOLTO: " + itemName);
+
+        // Salva l'inventario nel GameManager
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SaveInventory(this);
+        }
 
         UpdateInventoryUI();
 
         ShowPickupMessage(itemName);
     }
 
-    // =========================
-    // CONTROLLA SE HAI OGGETTO
-    // =========================
-
     public bool HasItem(string itemName)
     {
         foreach (InventoryItem item in items)
         {
-            if (item.itemName == itemName)
+            if (item.itemName == itemName &&
+                item.quantity > 0)
             {
                 return true;
             }
@@ -100,9 +103,37 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
-    // =========================
-    // APRI / CHIUDI INVENTARIO
-    // =========================
+    public bool RemoveItem(string itemName)
+    {
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i].itemName == itemName)
+            {
+                items[i].quantity--;
+
+                if (items[i].quantity <= 0)
+                {
+                    items.RemoveAt(i);
+                }
+
+                // Aggiorna il salvataggio
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.SaveInventory(this);
+                }
+
+                UpdateInventoryUI();
+
+                Debug.Log(
+                    "OGGETTO UTILIZZATO: " + itemName
+                );
+
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private void ToggleInventory()
     {
@@ -140,10 +171,6 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    // =========================
-    // AGGIORNA INVENTARIO
-    // =========================
-
     private void UpdateInventoryUI()
     {
         if (inventoryGrid == null)
@@ -151,10 +178,8 @@ public class Inventory : MonoBehaviour
             return;
         }
 
-        // Cancella gli slot precedenti
         inventoryGrid.Clear();
 
-        // INVENTARIO VUOTO
         if (items.Count == 0)
         {
             Label emptyLabel =
@@ -169,16 +194,11 @@ public class Inventory : MonoBehaviour
             return;
         }
 
-        // CREA UNO SLOT PER OGNI OGGETTO
         foreach (InventoryItem item in items)
         {
             CreateInventorySlot(item);
         }
     }
-
-    // =========================
-    // CREA SLOT OGGETTO
-    // =========================
 
     private void CreateInventorySlot(
         InventoryItem item
@@ -190,10 +210,6 @@ public class Inventory : MonoBehaviour
         slot.AddToClassList(
             "inventory-slot"
         );
-
-        // =========================
-        // IMMAGINE
-        // =========================
 
         Image image =
             new Image();
@@ -210,10 +226,6 @@ public class Inventory : MonoBehaviour
 
         slot.Add(image);
 
-        // =========================
-        // NOME
-        // =========================
-
         Label nameLabel =
             new Label(item.itemName);
 
@@ -223,14 +235,8 @@ public class Inventory : MonoBehaviour
 
         slot.Add(nameLabel);
 
-        // =========================
-        // QUANTITÀ
-        // =========================
-
         Label quantityLabel =
-            new Label(
-                "×" + item.quantity
-            );
+            new Label("×" + item.quantity);
 
         quantityLabel.AddToClassList(
             "inventory-quantity"
@@ -238,13 +244,8 @@ public class Inventory : MonoBehaviour
 
         slot.Add(quantityLabel);
 
-        // Aggiunge lo slot alla griglia
         inventoryGrid.Add(slot);
     }
-
-    // =========================
-    // MESSAGGIO RACCOLTA
-    // =========================
 
     private void ShowPickupMessage(
         string itemName

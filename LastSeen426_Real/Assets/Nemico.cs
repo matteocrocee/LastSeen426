@@ -2,155 +2,180 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    [Header("Riferimenti")]
-    [Tooltip("Trascina qui l'oggetto del Player dall'Inspector")]
+    [Header("PLAYER")]
     public Transform player;
 
-    [Header("Impostazioni Inseguimento")]
-    [Tooltip("Distanza entro cui il nemico inizia a inseguire il giocatore")]
-    public float detectionRange = 10f;
+    [Header("VISIONE")]
+    public float detectionRange = 15f;
 
-    [Header("Impostazioni Movimento")]
-    [Tooltip("Velocità di movimento del nemico")]
-    public float speed = 3.0f;
+    [Header("MOVIMENTO")]
+    public float speed = 3f;
 
-    [Tooltip("Punti della piattaforma per il pattugliamento (opzionale)")]
-    public Transform[] patrolPoints;
+    [Header("ATTACCO")]
+    public float attackRange = 2f;
 
-    [Header("DANNO AL PLAYER")]
-    [Tooltip("Danno inflitto ogni secondo quando il nemico tocca il Player")]
-    public float damagePerSecond = 20f;
+    [Tooltip("Danno inflitto dal nemico ad ogni attacco")]
+    public float damage = 20f;
 
-    private int currentPatrolIndex = 0;
+    [Tooltip("Tempo minimo tra un attacco e l'altro")]
+    public float attackCooldown = 1f;
 
-    void Update()
+    private Rigidbody rb;
+    private PlayerHealth playerHealth;
+
+    private float nextAttackTime = 0f;
+
+    private void Start()
     {
-        // Se il Player non è stato assegnato, prova a cercarlo tramite Tag
+        rb = GetComponent<Rigidbody>();
+
+        if (rb == null)
+        {
+            Debug.LogError(
+                "ERRORE: il nemico non ha un Rigidbody!"
+            );
+
+            return;
+        }
+
         if (player == null)
         {
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            Debug.LogError(
+                "ERRORE: trascina il Player nel campo Player dell'EnemyController!"
+            );
 
-            if (playerObj != null)
-            {
-                player = playerObj.transform;
-            }
-            else
-            {
-                return;
-            }
+            return;
         }
 
-        float distanceToPlayer = Vector3.Distance(
-            transform.position,
-            player.position
-        );
+        playerHealth =
+            player.GetComponent<PlayerHealth>();
 
-        if (distanceToPlayer <= detectionRange)
+        if (playerHealth == null)
         {
-            MoveTowardsTarget(player.position);
+            playerHealth =
+                player.GetComponentInParent<PlayerHealth>();
         }
-        else
+
+        if (playerHealth == null)
         {
-            PatrolLogic();
+            playerHealth =
+                player.GetComponentInChildren<PlayerHealth>();
+        }
+
+        if (playerHealth == null)
+        {
+            Debug.LogError(
+                "ERRORE: PlayerHealth non trovato!"
+            );
         }
     }
 
-    private void PatrolLogic()
+    private void FixedUpdate()
     {
-        if (patrolPoints == null || patrolPoints.Length == 0)
+        if (player == null)
         {
             return;
         }
 
-        Transform targetPoint = patrolPoints[currentPatrolIndex];
-
-        if (targetPoint == null)
+        if (playerHealth == null)
         {
             return;
         }
 
-        MoveTowardsTarget(targetPoint.position);
+        float distance =
+            Vector3.Distance(
+                transform.position,
+                player.position
+            );
 
-        if (Vector3.Distance(
-            transform.position,
-            targetPoint.position
-        ) < 0.3f)
+        // FUORI DAL RAGGIO
+        if (distance > detectionRange)
         {
-            currentPatrolIndex =
-                (currentPatrolIndex + 1) % patrolPoints.Length;
+            return;
         }
+
+        // ATTACCO
+        if (distance <= attackRange)
+        {
+            AttackPlayer();
+            return;
+        }
+
+        // INSEGUIMENTO
+        MoveTowardsPlayer();
     }
 
-    private void MoveTowardsTarget(Vector3 targetPosition)
+    private void MoveTowardsPlayer()
     {
-        Vector3 targetDestination = new Vector3(
-            targetPosition.x,
-            transform.position.y,
-            targetPosition.z
-        );
-
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            targetDestination,
-            speed * Time.deltaTime
-        );
-
         Vector3 direction =
-            (targetDestination - transform.position).normalized;
+            player.position -
+            transform.position;
 
-        if (direction != Vector3.zero)
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude < 0.001f)
         {
-            Quaternion lookRotation =
-                Quaternion.LookRotation(direction);
-
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                lookRotation,
-                Time.deltaTime * 10f
-            );
+            return;
         }
+
+        direction.Normalize();
+
+        Vector3 movement =
+            direction *
+            speed *
+            Time.fixedDeltaTime;
+
+        rb.MovePosition(
+            rb.position + movement
+        );
+
+        Quaternion targetRotation =
+            Quaternion.LookRotation(direction);
+
+        rb.MoveRotation(
+            Quaternion.Slerp(
+                rb.rotation,
+                targetRotation,
+                10f *
+                Time.fixedDeltaTime
+            )
+        );
     }
 
-    // Quando il nemico tocca il Player
-    // con un Collider normale
-    private void OnCollisionStay(Collision collision)
+    private void AttackPlayer()
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (Time.time < nextAttackTime)
         {
-            DamagePlayer(collision.gameObject);
+            return;
         }
-    }
 
-    // Quando il nemico tocca il Player
-    // con un Trigger
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            DamagePlayer(other.gameObject);
-        }
-    }
+        nextAttackTime =
+            Time.time + attackCooldown;
 
-    private void DamagePlayer(GameObject playerObj)
-    {
-        PlayerHealth health =
-            playerObj.GetComponent<PlayerHealth>();
+        Debug.Log(
+            "NEMICO ATTACCA! Danno: " +
+            damage
+        );
 
-        if (health != null)
-        {
-            health.TakeDamage(
-                damagePerSecond * Time.deltaTime
-            );
-        }
+        playerHealth.TakeDamage(damage);
     }
 
     private void OnDrawGizmosSelected()
     {
+        // Raggio di rilevamento
         Gizmos.color = Color.red;
 
         Gizmos.DrawWireSphere(
             transform.position,
             detectionRange
+        );
+
+        // Raggio di attacco
+        Gizmos.color = Color.yellow;
+
+        Gizmos.DrawWireSphere(
+            transform.position,
+            attackRange
         );
     }
 }
