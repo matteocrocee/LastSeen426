@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
@@ -13,16 +13,14 @@ public class EnemyController : MonoBehaviour
 
     [Header("ATTACCO")]
     public float attackRange = 2f;
-
-    [Tooltip("Danno inflitto dal nemico ad ogni attacco")]
     public float damage = 20f;
-
-    [Tooltip("Tempo minimo tra un attacco e l'altro")]
     public float attackCooldown = 1f;
+
+    [Header("ANIMAZIONE")]
+    public Animator animator;
 
     private Rigidbody rb;
     private PlayerHealth playerHealth;
-
     private float nextAttackTime = 0f;
 
     private void Start()
@@ -34,7 +32,6 @@ public class EnemyController : MonoBehaviour
             Debug.LogError(
                 "ERRORE: il nemico non ha un Rigidbody!"
             );
-
             return;
         }
 
@@ -43,44 +40,43 @@ public class EnemyController : MonoBehaviour
             Debug.LogError(
                 "ERRORE: trascina il Player nel campo Player dell'EnemyController!"
             );
-
             return;
         }
 
-        playerHealth =
-            player.GetComponent<PlayerHealth>();
+        playerHealth = player.GetComponent<PlayerHealth>();
 
         if (playerHealth == null)
-        {
-            playerHealth =
-                player.GetComponentInParent<PlayerHealth>();
-        }
+            playerHealth = player.GetComponentInParent<PlayerHealth>();
 
         if (playerHealth == null)
-        {
-            playerHealth =
-                player.GetComponentInChildren<PlayerHealth>();
-        }
+            playerHealth = player.GetComponentInChildren<PlayerHealth>();
 
         if (playerHealth == null)
-        {
             Debug.LogError(
                 "ERRORE: PlayerHealth non trovato!"
+            );
+
+        // Cerca automaticamente l'Animator
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
+
+            if (animator == null)
+                animator = GetComponentInChildren<Animator>();
+        }
+
+        if (animator == null)
+        {
+            Debug.LogError(
+                "ERRORE: Animator non trovato nel nemico!"
             );
         }
     }
 
     private void FixedUpdate()
     {
-        if (player == null)
-        {
+        if (player == null || playerHealth == null)
             return;
-        }
-
-        if (playerHealth == null)
-        {
-            return;
-        }
 
         float distance =
             Vector3.Distance(
@@ -88,33 +84,35 @@ public class EnemyController : MonoBehaviour
                 player.position
             );
 
-        // FUORI DAL RAGGIO
+        // PLAYER TROPPO LONTANO
         if (distance > detectionRange)
         {
+            SetAnimationSpeed(0f);
             return;
         }
 
-        // ATTACCO
+        // PLAYER VICINO: ATTACCO
         if (distance <= attackRange)
         {
+            SetAnimationSpeed(0f);
             AttackPlayer();
             return;
         }
 
-        // INSEGUIMENTO
+        // PLAYER NELLA DETECTION RANGE: INSEGUIMENTO
         MoveTowardsPlayer();
     }
 
     private void MoveTowardsPlayer()
     {
         Vector3 direction =
-            player.position -
-            transform.position;
+            player.position - transform.position;
 
         direction.y = 0f;
 
         if (direction.sqrMagnitude < 0.001f)
         {
+            SetAnimationSpeed(0f);
             return;
         }
 
@@ -136,18 +134,18 @@ public class EnemyController : MonoBehaviour
             Quaternion.Slerp(
                 rb.rotation,
                 targetRotation,
-                10f *
-                Time.fixedDeltaTime
+                10f * Time.fixedDeltaTime
             )
         );
+
+        // Il nemico si sta muovendo → CORSA
+        SetAnimationSpeed(1f);
     }
 
     private void AttackPlayer()
     {
         if (Time.time < nextAttackTime)
-        {
             return;
-        }
 
         nextAttackTime =
             Time.time + attackCooldown;
@@ -160,9 +158,16 @@ public class EnemyController : MonoBehaviour
         playerHealth.TakeDamage(damage);
     }
 
+    private void SetAnimationSpeed(float value)
+    {
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", value);
+        }
+    }
+
     private void OnDrawGizmosSelected()
     {
-        // Raggio di rilevamento
         Gizmos.color = Color.red;
 
         Gizmos.DrawWireSphere(
@@ -170,7 +175,6 @@ public class EnemyController : MonoBehaviour
             detectionRange
         );
 
-        // Raggio di attacco
         Gizmos.color = Color.yellow;
 
         Gizmos.DrawWireSphere(
